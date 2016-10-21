@@ -35,6 +35,7 @@ class SessionsController extends Controller
             setcookie("user", $user);
             setcookie("password",  $pass);
             $isAdmin = $this->auth->user()->isAdmin();
+            $_SESSION['isAdmin'] = $isAdmin;
 
             if ($isAdmin) {
                 setcookie("isadmin", "yes");
