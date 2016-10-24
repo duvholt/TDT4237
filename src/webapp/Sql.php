@@ -31,9 +31,9 @@ class Sql
 
     static function insertDummyUsers()
     {
-        $hash1 = Hash::make(bin2hex(openssl_random_pseudo_bytes(2)));
-        $hash2 = Hash::make('techit');
-        $hash3 = Hash::make('mundbjar');
+        $hash1 = Hash::make(bin2hex(openssl_random_pseudo_bytes(16)));
+        $hash2 = Hash::make(bin2hex(openssl_random_pseudo_bytes(16)));
+        $hash3 = Hash::make(bin2hex(openssl_random_pseudo_bytes(16)));
 
         $q1 = "INSERT INTO users(user, pass, isadmin, first_name, last_name, phone, company, email) VALUES ('systemmanager', '$hash1', 1, 'Approv', 'Patents', '53290672', 'Patentsy AS', 'systemmanager@patentsy.com')";
         $q2 = "INSERT INTO users(user, pass, isadmin, first_name, last_name, phone, company, email) VALUES ('ittechnican', '$hash2', 1, 'Robert', 'Green', '92300847', 'Patentsy AS', 'ittechnican@patentsy.com')";
