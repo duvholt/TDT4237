@@ -7,6 +7,7 @@ use tdt4237\webapp\Auth;
 use tdt4237\webapp\Hash;
 use tdt4237\webapp\repository\UserRepository;
 use tdt4237\webapp\repository\PatentRepository;
+use tdt4237\webapp\repository\RequestRepository;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -19,6 +20,14 @@ $app = new Slim([
     'view' => new Twig()
 
 ]);
+
+//Set the request time window in seconds. If 10 requests are within x seconds
+//then they will all be counted, if an eleventh request is after x seconds
+//it will not be counted
+$app->requestTimeWindow = 60;
+
+//Set the maximum number of requests for a window
+$app->maxNumberOfRequestsWithinWindow = 5;
 
 $view = $app->view();
 $view->parserExtensions = array(
@@ -42,6 +51,7 @@ date_default_timezone_set("Europe/Oslo");
 $app->hash = new Hash();
 $app->userRepository = new UserRepository($app->db);
 $app->patentRepository = new PatentRepository($app->db);
+$app->requestRepository = new RequestRepository($app->db);
 $app->auth = new Auth($app->userRepository, $app->hash);
 
 $ns ='tdt4237\\webapp\\controllers\\';

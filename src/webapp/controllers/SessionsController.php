@@ -3,6 +3,8 @@
 namespace tdt4237\webapp\controllers;
 
 use tdt4237\webapp\repository\UserRepository;
+use tdt4237\webapp\repository\RequestRepository;
+use tdt4237\webapp\models\Request;
 
 class SessionsController extends Controller
 {
@@ -29,6 +31,19 @@ class SessionsController extends Controller
         $request = $this->app->request;
         $user    = $request->post('user');
         $pass    = $request->post('pass');
+
+        $min_time = $this->app->requestTimeWindow;
+        $max_requests = $this->app->maxNumberOfRequestsWithinWindow;
+
+        $request = new Request($_SERVER['REMOTE_ADDR'], time());
+        $this->requestRepository->save($request);
+
+        $requestsWithinMinTime = $this->requestRepository->countAfter(time() - $min_time, $_SERVER['REMOTE_ADDR'])[0];
+        if($requestsWithinMinTime > $max_requests){
+            $this->app->flash('info', sprintf('Too many log in attempts wait %s seconds before trying again.', $min_time));
+            $this->app->redirect('/login');
+            return;
+        }
 
         if ($this->auth->checkCredentials($user, $pass)) {
             $_SESSION['user'] = $user;
