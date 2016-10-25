@@ -7,22 +7,18 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 class Hash
 {
 
-    static $salt = "password";
-
-
     public function __construct()
     {
     }
 
     public static function make($plaintext)
     {
-        return hash('sha1', $plaintext . Hash::$salt);
-
+        return password_hash($plaintext, PASSWORD_DEFAULT);
     }
 
     public function check($plaintext, $hash)
     {
-        return $this->make($plaintext) === $hash;
+        return password_verify($plaintext, $hash);
     }
 
 }
