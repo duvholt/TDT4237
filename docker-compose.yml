@@ -1,0 +1,13 @@
+version: '2'
+services:
+  web:
+    build: .
+    command: php -S 0.0.0.0:8080 -t web web/index.php
+    volumes:
+      - ./src:/code/src
+      - ./web:/code/web
+      - ./test:/code/test
+      - ./app.db:/code/app.db
+    ports:
+      - "8080:8080"
+
