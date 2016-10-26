@@ -3,6 +3,15 @@
 {% block content %}
     <h2>Patents</h2>
 
+    <form method="POST" class="ui form" action="">
+      <div class="field">
+        <label>
+          Patents search
+          <input type="text" name="search" placeholder="Search...">
+        </label>
+      </div>
+    </form>
+
     <table class="ui single line table">
         <thead>
             <tr>
@@ -27,7 +36,7 @@
 
             {% if patent is empty %}
             <tr>
-                <td colspan="3">There are no patents registered yet!</td>
+                <td colspan="3">No patents were found.</td>
             </tr>
             {% endif %}
         </tbody>

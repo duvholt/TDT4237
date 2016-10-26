@@ -17,6 +17,7 @@ class PatentRepository
     private $FIND_BY_PATENT_ID;
     private $DELETE_BY_PATENT_ID;
     private $INSERT_QUERY;
+    private $SEARCH_PATENTS;
 
     public function __construct(PDO $pdo)
     {
@@ -25,6 +26,7 @@ class PatentRepository
         $this->FIND_BY_PATENT_ID = $pdo->prepare("SELECT * FROM patent WHERE patentId = :patentId");
         $this->DELETE_BY_PATENT_ID = $pdo->prepare("DELETE FROM patent WHERE patentid=:patentid;");
         $this->INSERT_QUERY = $pdo->prepare("INSERT INTO patent (company, date, title, description, file, filename) VALUES (:company, :date, :title, :description, :file, :filename)");
+        $this->SEARCH_PATENTS = $pdo->prepare("SELECT * FROM patent WHERE company LIKE :search OR title LIKE :search");
     }
 
     public function makePatentFromRow(array $row)
@@ -68,6 +70,23 @@ class PatentRepository
         }
 
         $fetch = $results->fetchAll();
+        if(count($fetch) == 0) {
+            return false;
+        }
+
+        return new PatentCollection(
+            array_map([$this, 'makePatentFromRow'], $fetch)
+        );
+    }
+
+    public function search($search)
+    {
+        $SEARCH_PATENTS = $this->SEARCH_PATENTS;
+        $sqlSearch = "%$search%";
+        $SEARCH_PATENTS->bindParam(':search', $sqlSearch);
+
+        $SEARCH_PATENTS->execute();
+        $fetch = $SEARCH_PATENTS->fetchAll();
         if(count($fetch) == 0) {
             return false;
         }

@@ -26,6 +26,19 @@ class PatentsController extends Controller
         $this->render('patents/index.twig', ['patent' => $patent, 'users' => $users]);
     }
 
+    public function search()
+    {
+        $request = $this->app->request;
+        $searchTerm = $request->post('search');
+        $patents = $this->patentRepository->search($searchTerm);
+        if($patents != null)
+        {
+            $patents->sortByDate();
+        }
+        $users = $this->userRepository->all();
+        $this->render('patents/index.twig', ['patent' => $patents, 'users' => $users]);
+    }
+
     public function show($patentId)
     {
         $patent = $this->patentRepository->find($patentId);
