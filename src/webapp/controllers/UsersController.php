@@ -21,22 +21,27 @@ class UsersController extends Controller
         if ($this->auth->guest()) {
             $this->app->flash("info", "You must be logged in to do that");
             $this->app->redirect("/login");
-
+       
         } else {
-            $user = $this->userRepository->findByUser($username);
+            if ($this->auth->check() && $this->auth->isAdmin() === true) {
+                $user = $this->userRepository->findByUser($username);
+                if ($user != false && $user->getUsername() == $this->auth->getUsername()) {
+                    $this->render('users/showExtended.twig', [
+                        'user' => $user,
+                        'username' => $username
+                    ]);
+                }
 
-            if ($user != false && $user->getUsername() == $this->auth->getUsername()) {
-
-                $this->render('users/showExtended.twig', [
-                    'user' => $user,
-                    'username' => $username
-                ]);
-            } else if ($this->auth->check()) {
-
-                $this->render('users/show.twig', [
-                    'user' => $user,
-                    'username' => $username
-                ]);
+                else {
+                    $this->render('users/show.twig', [
+                        'user' => $user,
+                        'username' => $username
+                    ]);
+                }
+            }
+            else {
+                $this->app->flash('info', "Insufficient privileges to perform action");
+                $this->app->redirect('/'); 
             }
         }
     }
@@ -121,12 +126,18 @@ class UsersController extends Controller
 
     public function destroy($username)
     {
-        if ($this->userRepository->deleteByUsername($username) === 1) {
-            $this->app->flash('info', "Sucessfully deleted '$username'");
-            $this->app->redirect('/admin');
+        if($this->auth->check() && $this->auth->isAdmin() === true){
+            if ($this->userRepository->deleteByUsername($username) === 1) {
+                $this->app->flash('info', "Sucessfully deleted '$username'");
+                $this->app->redirect('/admin');
+                return;
+            }
+        }
+        else {
+            $this->app->flash('info', "Insufficient privileges to perform action");
+            $this->app->redirect('/');
             return;
         }
-
         $this->app->flash('info', "An error ocurred. Unable to delete user '$username'.");
         $this->app->redirect('/admin');
     }
