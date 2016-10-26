@@ -29,6 +29,17 @@ $app->requestTimeWindow = 60;
 //Set the maximum number of requests for a window
 $app->maxNumberOfRequestsWithinWindow = 5;
 
+
+if (isset($_SESSION['last_ip']) === false) {
+    $_SESSION['last_ip'] = $_SERVER['REMOTE_ADDR']; 
+}
+
+if ($_SESSION['last_ip'] != $_SERVER['REMOTE_ADDR']){
+    session_unset();
+    session_destroy();  
+}
+
+
 $view = $app->view();
 $view->parserExtensions = array(
     new TwigExtension(),
