@@ -18,7 +18,7 @@ class Sql
     static function up()
     {
         $q1 = "CREATE TABLE users (id INTEGER PRIMARY KEY, user VARCHAR(50), pass VARCHAR(50), email varchar(50) default null, first_name varchar(50), last_name varchar(50), phone varchar (8), company varchar(50), isadmin INTEGER);";
-        $q6 = "CREATE TABLE patent (patentId INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL, title TEXT NOT NULL, file TEXT NOT NULL, description TEXT NOT NULL, date TEXT NOT NULL, FOREIGN KEY(patentId) REFERENCES users(company));";
+        $q6 = "CREATE TABLE patent (patentId INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL, title TEXT NOT NULL, file TEXT NOT NULL, filename TEXT NOT NULL, description TEXT NOT NULL, date TEXT NOT NULL, FOREIGN KEY(patentId) REFERENCES users(company));";
 
         self::$pdo->exec($q1);
         self::$pdo->exec($q6);
@@ -48,8 +48,8 @@ class Sql
     }
 
     static function insertPatents() {
-        $q4 = "INSERT INTO patent(company, title, file, description, date) VALUES ('Patentsy AS', 'Search System', 'web/uploads/test.txt', 'New algorithm making search as fast as speed of light.', '20062016')";
-        $q5 = "INSERT INTO patent(company, title, file, description, date) VALUES ('Patentsy AS', 'New litteum battery technology', 'web/uploads/test.txt', 'A new technology that will take batteries through a new revolution.', '26072016')";
+        $q4 = "INSERT INTO patent(company, title, file, filename, description, date) VALUES ('Patentsy AS', 'Search System', 'web/uploads/test.txt', '', 'New algorithm making search as fast as speed of light.', '20062016')";
+        $q5 = "INSERT INTO patent(company, title, file, filename, description, date) VALUES ('Patentsy AS', 'New litteum battery technology', 'web/uploads/test.txt', '', 'A new technology that will take batteries through a new revolution.', '26072016')";
 
         self::$pdo->exec($q4);
         self::$pdo->exec($q5);

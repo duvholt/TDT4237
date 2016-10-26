@@ -73,16 +73,19 @@ class PatentsController extends Controller
             $description = $request->post('description');
             $company     = $request->post('company');
             $date        = date("dmY");
-            $file = $this -> startUpload();
 
             $validation = new PatentValidation($title, $description);
             if ($validation->isGoodToGo()) {
+                $file = $this -> startUpload();
                 $patent = new Patent($company, $title, $description, $date, $file);
                 $patent->setCompany($company);
                 $patent->setTitle($title);
                 $patent->setDescription($description);
                 $patent->setDate($date);
-                $patent->setFile($file);
+                if($file) {
+                    $patent->setFile($file['storagename']);
+                    $patent->setFilename($file['filename']);
+                }
                 $savedPatent = $this->patentRepository->save($patent);
                 $this->app->redirect('/patents/' . $savedPatent . '?msg="Patent succesfully registered');
             }
@@ -96,13 +99,48 @@ class PatentsController extends Controller
     {
         if(isset($_POST['submit']))
         {
-            $target_dir =  getcwd()."/web/uploads/";
-            $targetFile = $target_dir . basename($_FILES['uploaded']['name']);
-            if(move_uploaded_file($_FILES['uploaded']['tmp_name'], $targetFile))
+            $target_dir =  "web/uploads/";
+            do {
+                $target_filename = bin2hex(openssl_random_pseudo_bytes(40));
+            } while(file_exists($target_dir . $target_filename));
+            $filename = basename($_FILES['uploaded']['name']);
+            if(move_uploaded_file($_FILES['uploaded']['tmp_name'], $target_dir . $target_filename))
             {
-                return $targetFile;
+                return array('filename' => $filename, 'storagename' => $target_filename);
             }
         }
+    }
+
+    public function download($patentId)
+    {
+        $patentId = (int)$patentId;
+        $patent = $this->patentRepository->find($patentId);
+
+        if(!$patent || !$patent->getFile()) {
+            $this->app->flash('info', 'No download for given patent.');
+            $this->app->redirect('/patents/' . $patentId);
+            return;
+        }
+
+        $dl_dir = "web/uploads/";
+        $storagename = $patent->getFile();
+        $filename = $patent->getFilename();
+        $file_target = $dl_dir . $storagename;
+
+        if(!file_exists($file_target)) {
+            $this->app->flash('info', 'File missing. Please contact site staff.');
+            $this->app->redirect('/patents/' . $patent.getPatentId());
+            return;
+        }
+
+        $file = fopen($file_target, 'rb');
+
+        header('Content-disposition: attachment; filename="' . $filename . '"');
+        header('Content-length: ' . filesize($file_target));
+        header('Content-type: application/octet-stream');
+
+        fpassthru($file);
+        fclose($file);
     }
 
     public function destroy($patentId)

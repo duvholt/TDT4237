@@ -22,7 +22,7 @@
             {% if user.username == patent.company or user.company == patent.company %}
             <tr>
                 <td>File</td>
-                <td><a href="{{ patent.file }}">Patent</a></td>
+                <td><a href="/patents/{{ patent.patentId }}/download">Patent</a></td>
             </tr>
             {% endif %}
         </table>

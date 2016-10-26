@@ -28,6 +28,7 @@ class PatentRepository
         $patent->setDescription($row['description']);
         $patent->setDate($row['date']);
         $patent->setFile($row['file']);
+        $patent->setFilename($row['filename']);
 
         return $patent;
     }
@@ -81,10 +82,11 @@ class PatentRepository
         $description    = $patent->getDescription();
         $date           = $patent->getDate();
         $file           = $patent->getFile();
+        $filename       = $patent->getFilename();
 
         if ($patent->getPatentId() === null) {
-            $query = "INSERT INTO patent (company, date, title, description, file) "
-                . "VALUES ('$company', '$date', '$title', '$description', '$file')";
+            $query = "INSERT INTO patent (company, date, title, description, file, filename) "
+                . "VALUES ('$company', '$date', '$title', '$description', '$file', '$filename')";
         }
 
         $this->pdo->exec($query);
