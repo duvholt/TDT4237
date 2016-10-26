@@ -7,6 +7,7 @@ class Patent
     protected $patentId = null;
     protected $title;
     protected $file;
+    protected $filename;
     protected $company;
     protected $description;
     protected $date;
@@ -17,7 +18,6 @@ class Patent
         $this->title = $title;
         $this->description = $description;
         $this->date = $date;
-        $this->file = $file;
     }
 
     public function getPatentId() {
@@ -72,5 +72,13 @@ class Patent
 
     public function setFile($file){
         $this->file = $file;
+    }
+
+    public function getFilename(){
+        return $this->filename;
+    }
+
+    public function setFilename($filename){
+        $this->filename = $filename;
     }
 }

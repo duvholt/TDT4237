@@ -25,7 +25,7 @@ class PatentRepository
 
         $this->FIND_BY_PATENT_ID = $pdo->prepare("SELECT * FROM patent WHERE patentId = :patentId");
         $this->DELETE_BY_PATENT_ID = $pdo->prepare("DELETE FROM patent WHERE patentid=:patentid;");
-        $this->INSERT_QUERY = $pdo->prepare("INSERT INTO patent (company, date, title, description, file) VALUES (:company, :date, :title, :description, :file)");
+        $this->INSERT_QUERY = $pdo->prepare("INSERT INTO patent (company, date, title, description, file, filename) VALUES (:company, :date, :title, :description, :file, :filename)");
         $this->SEARCH_PATENTS = $pdo->prepare("SELECT * FROM patent WHERE company LIKE :search OR title LIKE :search");
     }
 
@@ -38,6 +38,7 @@ class PatentRepository
         $patent->setDescription($row['description']);
         $patent->setDate($row['date']);
         $patent->setFile($row['file']);
+        $patent->setFilename($row['filename']);
 
         return $patent;
     }
@@ -112,8 +113,7 @@ class PatentRepository
             $description    = $patent->getDescription();
             $date           = $patent->getDate();
             $file           = $patent->getFile();
-            if($file === null)
-                $file = "";
+			$filename       = $patent->getFilename();
 
             $INSERT_QUERY = $this->INSERT_QUERY;
 
@@ -122,6 +122,7 @@ class PatentRepository
             $INSERT_QUERY->bindParam(':title', $title);
             $INSERT_QUERY->bindParam(':description', $description);
             $INSERT_QUERY->bindParam(':file', $file);
+            $INSERT_QUERY->bindParam(':filename', $filename);
 
             $INSERT_QUERY->execute();
         }

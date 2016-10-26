@@ -86,6 +86,7 @@ $app->get('/patents/new', $ns . 'PatentsController:newpatent')->name('registerpa
 $app->post('/patents/new', $ns . 'PatentsController:create');
 
 $app->get('/patents/:patentId', $ns . 'PatentsController:show');
+$app->get('/patents/:patentId/download', $ns . 'PatentsController:download');
 
 $app->get('/patents/:patentId/delete', $ns . 'PatentsController:destroy');
 
