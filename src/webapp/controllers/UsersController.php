@@ -21,22 +21,27 @@ class UsersController extends Controller
         if ($this->auth->guest()) {
             $this->app->flash("info", "You must be logged in to do that");
             $this->app->redirect("/login");
-
+       
         } else {
-            $user = $this->userRepository->findByUser($username);
+            if ($this->auth->check() && $this->auth->isAdmin() === true) {
+                $user = $this->userRepository->findByUser($username);
+                if ($user != false && $user->getUsername() == $this->auth->getUsername()) {
+                    $this->render('users/showExtended.twig', [
+                        'user' => $user,
+                        'username' => $username
+                    ]);
+                }
 
-            if ($user != false && $user->getUsername() == $this->auth->getUsername()) {
-
-                $this->render('users/showExtended.twig', [
-                    'user' => $user,
-                    'username' => $username
-                ]);
-            } else if ($this->auth->check()) {
-
-                $this->render('users/show.twig', [
-                    'user' => $user,
-                    'username' => $username
-                ]);
+                else {
+                    $this->render('users/show.twig', [
+                        'user' => $user,
+                        'username' => $username
+                    ]);
+                }
+            }
+            else {
+                $this->app->flash('info', "Insufficient privileges to perform action");
+                $this->app->redirect('/'); 
             }
         }
     }
