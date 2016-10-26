@@ -30,11 +30,13 @@ class RegistrationFormValidation
         if (strlen($password) < 8) {
             $this->validationErrors[] = 'Password must contain 8 characters or more';
         }
-        if (strtolower($password) = $password || strtoupper($password) = $password) {
-            $this->validationErrors[] = 'Password must contain both upper and lower case letters'
+        
+        if (strtolower($password) == $password || strtoupper($password) == $password) {
+            $this->validationErrors[] = 'Password must contain both upper and lower case letters';
         }
+
         if (!preg_match('~[0-9]~', $password)){
-            $this->validationErrors[] = 'Password must contain atleast one number'
+            $this->validationErrors[] = 'Password must contain atleast one number';
         }
 
         if (empty($password)) {
