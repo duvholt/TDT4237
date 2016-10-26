@@ -31,7 +31,7 @@ class RegistrationFormValidation
             $this->validationErrors[] = 'Password must contain 8 characters or more';
         }
 
-        if (strtolower($password) == $password || strtoupper($password) == $password) {
+        if (strtolower($password) === $password || strtoupper($password) === $password) {
             $this->validationErrors[] = 'Password must contain both upper and lower case letters';
         }
 
