@@ -114,6 +114,12 @@ class PatentsController extends Controller
                 return;
             }
         }
-        $this->app->redirect('/');
+        else {
+            $this->app->flash('info', "Insufficient privileges to perform action");
+            $this->app->redirect('/');
+            return;
+        }
+        $this->app->flash('info', "An error ocurred. Unable to delete patent '$patentId'.");
+        $this->app->redirect('/admin');
     }
 }
