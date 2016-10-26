@@ -5,10 +5,11 @@ namespace tdt4237\webapp\controllers;
 class Controller
 {
     protected $app;
-    
+
     protected $userRepository;
     protected $auth;
     protected $patentRepository;
+    protected $requestRepository;
 
     public function __construct()
     {
@@ -16,6 +17,7 @@ class Controller
         $this->userRepository = $this->app->userRepository;
         $this->patentRepository = $this->app->patentRepository;
         $this->patentRepository = $this->app->patentRepository;
+        $this->requestRepository = $this->app->requestRepository;
         $this->auth = $this->app->auth;
         $this->hash = $this->app->hash;
     }
