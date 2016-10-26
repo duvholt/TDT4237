@@ -107,7 +107,7 @@ class PatentsController extends Controller
 
     public function destroy($patentId)
     {
-        if($this->auth->isAdmin() === true){
+        if($this->auth->check() && $this->auth->isAdmin() === true){
             if ($this->patentRepository->deleteByPatentid($patentId) === 1) {
                 $this->app->flash('info', "Sucessfully deleted '$patentId'");
                 $this->app->redirect('/admin');
