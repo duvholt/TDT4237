@@ -126,12 +126,31 @@ class PatentsController extends Controller
 
     public function download($patentId)
     {
+        if ($this->auth->guest()) {
+            $this->app->flash('error', 'You must be logged in to download your files.');
+            $this->app->redirect("/login");
+            return;
+        }
+
         $patentId = (int)$patentId;
         $patent = $this->patentRepository->find($patentId);
 
-        if(!$patent || !$patent->getFile()) {
-            $this->app->flash('info', 'No download for given patent.');
-            $this->app->redirect('/patents/' . $patentId);
+        if(!$patent) {
+            $this->app->redirect('/patents');
+            return;
+        }
+
+        $company = $patent->getCompany();
+        $user = $this->auth->user();
+        if($user->getUsername() !== $company && $user->getCompany() !== $company) {
+            $this->app->flash('error', 'Not authorised to download file for patent.');
+            $this->app->redirect('/patents/' . $patent->getPatentId());
+            return;
+        }
+
+        if(!$patent->getFile()) {
+            $this->app->flash('error', 'No download for given patent.');
+            $this->app->redirect('/patents/' . $patent->getPatentId());
             return;
         }
 
@@ -141,8 +160,8 @@ class PatentsController extends Controller
         $file_target = $dl_dir . $storagename;
 
         if(!file_exists($file_target)) {
-            $this->app->flash('info', 'File missing. Please contact site staff.');
-            $this->app->redirect('/patents/' . $patent.getPatentId());
+            $this->app->flash('error', 'File missing. Please contact site staff.');
+            $this->app->redirect('/patents/' . $patent->getPatentId());
             return;
         }
 
