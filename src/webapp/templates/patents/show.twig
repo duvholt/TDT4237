@@ -13,6 +13,12 @@
             </div>
         {% endif %}
 
+        {% if flash.error %}
+            <div class="ui error message">
+                {{ flash.error }}
+            </div>
+        {% endif %}
+
         <table class="ui definition table">
             <tr>
                 <td>Owner</td>
