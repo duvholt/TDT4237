@@ -42,8 +42,11 @@ class PatentsController extends Controller
     public function show($patentId)
     {
         $patent = $this->patentRepository->find($patentId);
-        $username = $_SESSION['user'];
-        $user = $this->userRepository->findByUser($username);
+        if($this->auth->check()) {
+            $user = $this->auth->user();
+        } else {
+            $user = null;
+        }
         $request = $this->app->request;
         $message = $request->get('msg');
         $variables = [];
