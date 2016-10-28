@@ -126,20 +126,24 @@ class UsersController extends Controller
 
     public function destroy($username)
     {
-        if($this->auth->check() && $this->auth->isAdmin() === true){
-            if ($this->userRepository->deleteByUsername($username) === 1) {
+        if($this->auth->check() && $this->auth->isAdmin() === true)
+        {
+            if ($this->userRepository->deleteByUsername($username))
+            {
                 $this->app->flash('info', "Sucessfully deleted '$username'");
-                $this->app->redirect('/admin');
-                return;
             }
+            else
+            {
+                $this->app->flash('info', "An error ocurred. Unable to delete user '$username'.");
+            }
+            $this->app->redirect('/admin');
+            return;
         }
         else {
             $this->app->flash('info', "Insufficient privileges to perform action");
             $this->app->redirect('/');
             return;
         }
-        $this->app->flash('info', "An error ocurred. Unable to delete user '$username'.");
-        $this->app->redirect('/admin');
     }
 
     public function makeSureUserIsAuthenticated()
