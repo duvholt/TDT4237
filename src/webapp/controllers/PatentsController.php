@@ -180,19 +180,22 @@ class PatentsController extends Controller
 
     public function destroy($patentId)
     {
-        if($this->auth->check() && $this->auth->isAdmin() === true){
-            if ($this->patentRepository->deleteByPatentid($patentId) === 1) {
+    if($this->auth->check() && $this->auth->isAdmin() === true)
+    {
+        if ($this->patentRepository->deleteByPatentid($patentId))
+        {
                 $this->app->flash('info', "Sucessfully deleted '$patentId'");
-                $this->app->redirect('/admin');
-                return;
-            }
         }
-        else {
+        else
+        {
+            $this->app->flash('info', "An error ocurred. Unable to delete patent '$patentId'.");
+        }
+            $this->app->redirect('/admin');
+            return;
+        } else {
             $this->app->flash('info', "Insufficient privileges to perform action");
             $this->app->redirect('/');
             return;
         }
-        $this->app->flash('info', "An error ocurred. Unable to delete patent '$patentId'.");
-        $this->app->redirect('/admin');
     }
 }
