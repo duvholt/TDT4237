@@ -123,7 +123,7 @@ class UserRepository
         $INSERT_QUERY->bindParam(':first_name', $first_name);
         $INSERT_QUERY->bindParam(':last_name', $last_name);
         $INSERT_QUERY->bindParam(':phone', $phone);
-        $INSERT_QUERY->bindParam(':company', $phone);
+        $INSERT_QUERY->bindParam(':company', $company);
         $INSERT_QUERY->bindParam(':isadmin', $isadmin);
 
         return $INSERT_QUERY->execute();
