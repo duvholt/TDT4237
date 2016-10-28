@@ -44,12 +44,12 @@ class SessionsController extends Controller
             $this->app->redirect('/login');
             return;
         }
-
+        session_regenerate_id();  
         if ($this->auth->checkCredentials($user, $pass)) {
             $_SESSION['user'] = $user;
             $isAdmin = $this->auth->user()->isAdmin();
             $_SESSION['isAdmin'] = $isAdmin;
-
+                    
             $this->app->flash('info', "You are now successfully logged in as $user.");
             $this->app->redirect('/');
             return;
